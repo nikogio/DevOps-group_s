@@ -1,0 +1,36 @@
+-- Time slots: 
+Week 6: Friday 8.30-11.00 
+The rest of the semester: Thursdays 14:00-17.00? TBD when the whole group is together. 
+
+-- Describe Distributed Workflow
+
+a) Which repository setup will we use?
+  TBD. 
+
+b) Which branching model will we use?
+  - original branch: original code 
+  - main branch: up-to-date code, PR setup  
+  - work branches 
+  
+  Naming conventions: 
+  <week>-<feature> 
+  
+  PR: 
+  - peer review of a person who wasn't involved 
+  - should include a description of the code 
+
+c) Which distributed development workflow will we use?
+  - weekly meetings (besides the exercises) with a stand-up
+  - stand-up: 
+    - status 
+    - PRs
+  - We use Teams for communication 
+  - We try to be here physically, but alternatively online 
+
+d) How do we expect contributions to look like?
+  - We use PRs, see above. 
+
+e) Who is responsible for integrating/reviewing contributions?
+  - We are collectively responsible.
+  - If we are unable to do it collectively, the one making the PR is responsible for assigning a reviewer. Once it's assigned, it's the reviewer's responsibility.
+  - We discuss it at the stand-ups or write on our chat, when a PR is ready. 
