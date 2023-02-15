@@ -14,15 +14,12 @@ class Database {
 
   all(sql, params = [], callback) {
     this.db.all(sql, params, (err, rows) => {
-      if (err) {
-        throw err;
-      }
-      callback(rows);
+      callback(err, rows);
     });
   }
 
-  run(sql, params = [], callback) {
-    this.db.run(sql, params, function (err) {
+  run(sql, callback) {
+    this.db.run(sql,function (err) {
       if (err) {
         throw err;
       }
@@ -64,7 +61,7 @@ class Database {
 //Database Service
 const schema = fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf-8');
 //DB initialization
-const database = new Database('./db/minitwit.db');
+const database = new Database('./src/db/minitwit.db');
 //database.run(schema);
 
 module.exports = database;
