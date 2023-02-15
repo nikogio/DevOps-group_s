@@ -43,7 +43,7 @@ div.page {
     margin: 30px auto;
 }
 
-div.page h1 {
+.page h1  {
     background: #6ECCC4;
     margin: 0;
     padding: 10px 14px;
@@ -53,7 +53,7 @@ div.page h1 {
     font-weight: normal;
 }
 
-div.page div.navigation {
+.navigation {
     background: #DEE9E8;
     padding: 4px 10px;
     border-top: 1px solid #ccc;
@@ -63,7 +63,7 @@ div.page div.navigation {
     letter-spacing: 0.5px;
 }
 
-div.page div.navigation a {
+.navigation a {
     color: #444;
     font-weight: bold;
 }
@@ -175,4 +175,10 @@ div.error {
     -webkit-border-radius: 2px;
     padding: 4px;
     font-size: 13px;
+}
+
+.container {
+    width: 65%;
+    margin: auto;
+    margin-top: 35px;
 }
