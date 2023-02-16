@@ -1,5 +1,21 @@
-extends layout
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .page
+      h1= title
 
-block content
-  h1= title
-  p Welcome to #{title}
+      .navigation
+        a(href="{{ url_for('timeline') }}") public timeline
+        |  |  
+        a(href="/signup") sign up
+        |  |  
+        a(href="signin") sign in
+
+      .body
+        include timeline.jade  
+
+      .footer
+         MiniTwit — A NodeJS project
