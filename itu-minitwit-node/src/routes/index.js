@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+const database = require('../db/dbService')
+
 /**
  * GET /
  *
@@ -12,14 +14,16 @@ var router = express.Router();
  *  - 500: An error occurred while retrieving the message
  */
 
-router.get('/', function(req, res, next) {
-  if(req.params.session.user_id == null){ // if not logged in 
 
+// TODO: Switch to "personal" timeline if logged in. Currently only shows public timeline. 
+router.get('/', function(req, res, next) {
     database.all("select message.*, user.* from message, user \
                 where message.flagged = 0 \
                 and message.author_id = user.user_id \
-                order by message.pub_date desc limit ?"
-    , [PER_PAGE], (err, rows) => {
+                order by message.pub_date desc limit 30"
+    , [], (err, rows) => {
+      console.log(rows);
+
     if (err) {
       console.error(err);
       res.status(500).render('error');
@@ -27,30 +31,9 @@ router.get('/', function(req, res, next) {
     }
 
     console.log('Successfully retrieved ' + rows.length + ' messages');
-    res.render('index', { title: 'ITU-MiniTwit-App' });
+    res.render('index', { title: 'MiniTwit' });
     });
 
-  } else { // if logged in 
-
-    database.all("select message.*, user.* from message, user \
-                  where message.flagged = 0 \
-                  and message.author_id = user.user_id \
-                  and ( user.user_id = ? or user.user_id \
-                    in (select whom_id from follower \
-                    where who_id = ?)) \
-                  order by message.pub_date desc limit ?"
-    , [PER_PAGE], (err, rows) => {
-    if (err) {
-      console.error(err);
-      res.status(500).render('error');
-      return;
-    }
-
-    console.log('Successfully retrieved ' + rows.length + ' messages');
-    res.render('index', { title: 'ITU-MiniTwit-App' });
-    });
-
-  }
 });
 
 
