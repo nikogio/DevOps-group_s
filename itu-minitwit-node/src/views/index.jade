@@ -10,9 +10,9 @@ html
       .navigation
         a(href="{{ url_for('timeline') }}") public timeline
         |  |  
-        a(href="{{ url_for('public_timeline') }}") sign up
+        a(href="/authentication") sign up
         |  |  
-        a(href="{{ url_for('login') }}") sign in
+        a(href="login") sign in
 
       .body
         include timeline.jade  
