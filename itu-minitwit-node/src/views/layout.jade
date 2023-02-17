@@ -1,0 +1,22 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .page
+      h1= title
+
+      .navigation
+        a(href="{{ url_for('timeline') }}") public timeline
+        |  |  
+        a(href="/signup") sign up
+        |  |  
+        a(href="signin") sign in
+
+    
+      .body
+        block content  
+
+      .footer
+         MiniTwit — A NodeJS project
