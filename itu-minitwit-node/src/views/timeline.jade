@@ -1,9 +1,44 @@
+- var convert = function(epoch){  
+-   var date = new Date(epoch*1000)
+-   var formatted = date.getFullYear() + '-' + date.getMonth()+1 + '-' + date.getDate() + ' @ ' + date.getHours() + ':' + date.getMinutes() 
+-   return formatted
+- }
 
 .timeline-box
     .title 
         h2 Public Timeline
-        //- needs an if statement, when we support users (Private Timeline)
-        p This is where the twits go... 
+
+        ul.messages 
+            for msg in messages 
+                li 
+                    img(src='{{ message.email|gravatar(size=48) }}')
+                    //-  when we support users: a(href="{{ url_for('user_timeline', username=message.username)
+                    strong #[a(href="/user/#{msg.user_id}") #{msg.username}] 
+                    span #{msg.text} 
+                    small — #{convert(msg.pub_date)}
+            else 
+                li 
+                    em There's no messages so far. 
+            endfor 
+
+
+        //- 
+            ul messages 
+                {% for message in messages %}
+                    li
+                        img(src='{{ message.email|gravatar(size=48) }}')
+                        p
+                        strong
+                        a(href="{{ url_for('user_timeline', username=message.username)\
+                        }}") {{ message.username }}
+                        {{ message.text }}
+                        small — {{ message.pub_date|datetimeformat }}
+                {% else %}
+                    li
+                        em There's no message so far.
+                {% endfor %}
+
+
 
 //- 
     | {% extends "layout.html" %}
