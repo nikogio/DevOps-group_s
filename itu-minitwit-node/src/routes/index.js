@@ -30,9 +30,14 @@ router.get('/', function(req, res, next) {
       return;
     }
 
+    var d = new Date((rows[0].pub_date)*1000);
+    console.log("HALLOHALLIHERERDENJKSHDKJAHLKJDH: " + d);
+    
     console.log('Successfully retrieved ' + rows.length + ' messages');
-    res.render('index', { title: 'MiniTwit' });
+    res.render('index', { title: 'MiniTwit', messages: rows });
     });
+
+
 
 });
 
