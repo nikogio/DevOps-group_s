@@ -51,3 +51,7 @@ docker run  -d --name itu-minitwit-node -p 3000:3000 itu-minitwit-node
 Now the application should be accesible in: 
 
 http://localhost:3000/
+
+## Running as virtual machine with Vagrant and Virtual Box
+
+## Deploy to DigitalOcean
