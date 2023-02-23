@@ -26,13 +26,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', simulatorRouter);
 app.use('/api/', indexRouter);
 app.use('/api/message', messageRouter);
 app.use('/api/follow', followRouter);
 app.use('/api/signup', signupRouter);
 app.use('/api/signin', signinRouter);
 app.use('/api/users', userRouter);
-app.use('/', simulatorRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
