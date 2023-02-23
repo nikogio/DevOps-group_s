@@ -2,6 +2,12 @@ extends layout
 
 block content
     h2 Sign In
+
+    if errorMessage
+        .error
+            strong Error: 
+               | #{errorMessage}
+
     .signin-form
         form(action='/api/signin' method='POST')
             dl
