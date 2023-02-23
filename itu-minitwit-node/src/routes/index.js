@@ -32,10 +32,12 @@ router.get('/', function(req, res, next) {
     console.log('Successfully retrieved ' + rows.length + ' messages');
     res.render('index', { messages: rows });
     });
-
-
-
 });
 
+
+router.post('/register', function(req, res, next) {
+
+    res.render('test', { title: 'MiniTwit', messages: "test" });
+});
 
 module.exports = router;
