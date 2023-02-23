@@ -36,6 +36,6 @@ router.post('/', function(req, res, next) {
     }
     //if no error, redirect to the login page
     res.redirect('/login');
-  }
+  });
 
  });
