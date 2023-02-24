@@ -70,7 +70,7 @@ router.post('/', function(req, res, next) {
       return;
     }
 
-    // if user does not exist
+    // if this username already exists
     if (rows.length != 0) {
       req.session.username = req.body.username;
       req.session.email = req.body.email;
@@ -81,20 +81,20 @@ router.post('/', function(req, res, next) {
     return;
   })
 
+  // if everything's fine
 
-  //if request.body.password and request.body.username has values from the form, do this
-  var user = {
-    username: req.body.username,
-    password: hash(req.body.password)
-  };
-  //insert the user into the database
-  db.insert(user, function(err, user) {
+  database.all('INSERT INTO user (username, email, pw_hash) values (?, ?, ?)', [req.body.username, req.body.email, hash(req.body.password)], (err, rows) => {
+    
     if (err) {
-      res.status(500).send('Error inserting new user: ' + err);
+      console.error(err);
+      res.status(500).send({ error: 'An error occurred while registering', description: err.toString() });
+      
       return;
     }
-    //if no error, redirect to the login page
-    res.redirect('/login');
-  });
+
+    req.session.successMessage = 'You were successfully registered and can login now';
+    res.redirect('/api/signin');
+    return;
+  })
 
  });
