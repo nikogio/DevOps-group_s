@@ -51,6 +51,7 @@ router.post('/', function(req, res, next) {
     return;
   }
 
+  // passwords must match
   if (req.body.password != req.body.password2) {
     req.session.username = req.body.username;
     req.session.email = req.body.email;
@@ -58,6 +59,28 @@ router.post('/', function(req, res, next) {
     res.redirect('/api/signup');
     return;
   }
+
+  // the user name cannot be already taken
+  database.all('SELECT * FROM user WHERE username = ?', req.body.username, (err, rows) => {
+    
+    if (err) {
+      console.error(err);
+      res.status(500).send({ error: 'An error occurred while retrieving user', description: err.toString() });
+      
+      return;
+    }
+
+    // if user does not exist
+    if (rows.length != 0) {
+      req.session.username = req.body.username;
+      req.session.email = req.body.email;
+      req.session.errorMessage = 'The username is already taken';
+      res.redirect('/api/signup');
+      return;
+    }
+    return;
+  })
+
 
   //if request.body.password and request.body.username has values from the form, do this
   var user = {
