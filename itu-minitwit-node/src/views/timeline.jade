@@ -5,8 +5,9 @@
 - }
 
 .timeline-box
-    .title 
-        h2 Public Timeline
+    .title
+            h2= path == '/public' ? "Public Timeline" : (path == '/' ? "My Timeline" : "")
+
 
         ul.messages 
             for msg in messages 
