@@ -66,4 +66,89 @@ router.get('/public', function (req, res, next) {
     });
 });
 
+/* Display's a users tweets. */
+router.get('/:username', function(req, res, next) {
+
+  database.all("SELECT * FROM user where username = ?", [req.params.username], (err, rows) => {
+
+    if (err) {
+      console.error(err);
+      res.status(500).send({ error: 'An error occurred while retrieving user', description: err.toString() });
+      return;
+    }
+
+    // preparation for when we have a 404 page
+
+    // if user does not exist
+    if (rows.length == 0) {
+      console.log("The user does not exist");
+      res.status(400).send({ error: 'User does not exist'});
+      return;
+    }
+
+    let profile = rows[0];
+
+    if (req.session.user) {
+
+      database.all("select 1 from follower where follower.who_id = ? and follower.whom_id = ?", [req.session.user, profile.user_id], (err, rows2) => {
+        
+        if (err) {
+          console.error(err);
+          res.status(500).send({ error: 'An error occurred while retrieving user', description: err.toString() });
+          return;
+        }
+
+        // if they are not followed
+        if (rows2.length == 0) {
+          database.all("select message.*, user.* from message, user where \
+          user.user_id = message.author_id and user.user_id = ? \
+          order by message.pub_date desc limit 30", [profile.user_id], (err, rows3) => {
+            
+            if (err) {
+              console.error(err);
+              res.status(500).send({ error: 'An error occurred while retrieving user', description: err.toString() });
+              return;
+            }
+
+            res.render('index', { messages: rows3, path: req.path, followed: false, profile: profile})
+            return;
+          })
+        } else { // if they are followed
+
+          database.all("select message.*, user.* from message, user where \
+          user.user_id = message.author_id and user.user_id = ? \
+          order by message.pub_date desc limit 30", [profile.user_id], (err, rows3) => {
+            
+            if (err) {
+              console.error(err);
+              res.status(500).send({ error: 'An error occurred while retrieving user', description: err.toString() });
+              return;
+            }
+
+            res.render('index', { messages: rows3, path: req.path, followed: true, profile: profile})
+            return;
+          })
+
+        }
+      })
+
+    } else {
+      database.all("select message.*, user.* from message, user where \
+          user.user_id = message.author_id and user.user_id = ? \
+          order by message.pub_date desc limit 30", [profile.user_id], (err, rows4) => {
+            
+            if (err) {
+              console.error(err);
+              res.status(500).send({ error: 'An error occurred while retrieving user', description: err.toString() });
+              return;
+            }
+
+            res.render('index', { messages: rows4, path: req.path, followed: false, profile: profile})
+            return;
+          })
+    }
+  });
+  
+});
+
 module.exports = router;

@@ -6,7 +6,7 @@
 
 .timeline-box
     .title
-            h2= path == '/public' ? "Public Timeline" : (path == '/' ? "My Timeline" : "")
+            h2= path == '/public' ? "Public Timeline" : (path == '/' ? "My Timeline" : (path.substring(1) + "'s Timeline"))
 
 
         ul.messages 
