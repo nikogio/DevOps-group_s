@@ -1,8 +1,14 @@
 var express = require('express');
 var router = express.Router();
 
+const database = require('../db/dbService')
+
 router.get('/', function(req, res, next) {
-  res.render('signup');
+
+  const errorMessage = req.session.errorMessage;
+
+  delete req.session.errorMessage;
+  res.render('signup', {errorMessage: errorMessage});
 });
 
 module.exports = router;
@@ -11,11 +17,13 @@ module.exports = router;
 function hash(password) {
   return password;
 }
+
+
 router.post('/', function(req, res, next) {
-  //if request.body.username is not empty do this
 
   if (!req.body.username) {
-    res.status(400).send('Username is required');
+    req.session.errorMessage = 'You have to enter a username';
+    res.redirect('/api/signup');
     return;
   }
   //if request.body.password is not empty do this

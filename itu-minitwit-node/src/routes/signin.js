@@ -8,7 +8,6 @@ router.get('/', function(req, res, next) {
   const errorMessage = req.session.errorMessage;
 
   delete req.session.errorMessage;
-  console.log(errorMessage);
   res.render('signin', {errorMessage: errorMessage});
 });
 
