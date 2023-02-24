@@ -6,9 +6,13 @@ const database = require('../db/dbService')
 router.get('/', function(req, res, next) {
 
   const errorMessage = req.session.errorMessage;
+  const username = req.session.username;
+  const email = req.session.email;
 
   delete req.session.errorMessage;
-  res.render('signup', {errorMessage: errorMessage});
+  delete req.session.username;
+  delete req.session.email;
+  res.render('signup', {errorMessage: errorMessage, username: username, email: email});
 });
 
 module.exports = router;
@@ -30,6 +34,8 @@ router.post('/', function(req, res, next) {
 
   // correct format of email
   if (!req.body.email || !req.body.email.includes('@')) {
+    req.session.username = req.body.username;
+    req.session.email = req.body.email;
     req.session.errorMessage = 'You have to enter a valid email address';
     res.redirect('/api/signup');
     return;
@@ -38,12 +44,16 @@ router.post('/', function(req, res, next) {
 
   // password must be entered
   if (!req.body.password) {
+    req.session.username = req.body.username;
+    req.session.email = req.body.email;
     req.session.errorMessage = 'You have to enter a password';
     res.redirect('/api/signup');
     return;
   }
 
   if (req.body.password != req.body.password2) {
+    req.session.username = req.body.username;
+    req.session.email = req.body.email;
     req.session.errorMessage = 'The two passwords do not match';
     res.redirect('/api/signup');
     return;
