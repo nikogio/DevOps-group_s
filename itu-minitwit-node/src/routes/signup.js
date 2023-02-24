@@ -11,14 +11,18 @@ function hash(password) {
 
 router.get('/', function(req, res, next) {
 
-  const errorMessage = req.session.errorMessage;
-  const username = req.session.username;
-  const email = req.session.email;
-
-  delete req.session.errorMessage;
-  delete req.session.username;
-  delete req.session.email;
-  res.render('signup', {errorMessage: errorMessage, username: username, email: email});
+  if (req.session.user) {
+    res.redirect('/api');
+  } else {
+    const errorMessage = req.session.errorMessage;
+    const username = req.session.username;
+    const email = req.session.email;
+  
+    delete req.session.errorMessage;
+    delete req.session.username;
+    delete req.session.email;
+    res.render('signup', {errorMessage: errorMessage, username: username, email: email});
+  }
 });
 
 

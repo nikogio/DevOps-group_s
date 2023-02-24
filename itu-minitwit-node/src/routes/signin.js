@@ -10,12 +10,16 @@ function hash(password) {
 
 router.get('/', function(req, res, next) {
 
-  const errorMessage = req.session.errorMessage;
-  const username = req.session.username;
+  if (req.session.user) {
+    res.redirect('/api');
+  } else {
+    const errorMessage = req.session.errorMessage;
+    const username = req.session.username;
 
-  delete req.session.errorMessage;
-  delete req.session.username;
-  res.render('signin', {errorMessage: errorMessage, username: username});
+    delete req.session.errorMessage;
+    delete req.session.username;
+    res.render('signin', {errorMessage: errorMessage, username: username});
+  }
 });
 
 
