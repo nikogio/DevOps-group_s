@@ -2,6 +2,12 @@ var express = require('express');
 var router = express.Router();
 
 const database = require('../db/dbService')
+module.exports = router;
+
+//dummy hash function
+function hash(password) {
+  return password;
+}
 
 router.get('/', function(req, res, next) {
 
@@ -14,13 +20,6 @@ router.get('/', function(req, res, next) {
   delete req.session.email;
   res.render('signup', {errorMessage: errorMessage, username: username, email: email});
 });
-
-module.exports = router;
-
-//dummy hash function
-function hash(password) {
-  return password;
-}
 
 
 router.post('/', function(req, res, next) {
@@ -77,24 +76,22 @@ router.post('/', function(req, res, next) {
       req.session.errorMessage = 'The username is already taken';
       res.redirect('/api/signup');
       return;
-    }
-    return;
-  })
-
-  // if everything's fine
-
-  database.all('INSERT INTO user (username, email, pw_hash) values (?, ?, ?)', [req.body.username, req.body.email, hash(req.body.password)], (err, rows) => {
-    
-    if (err) {
-      console.error(err);
-      res.status(500).send({ error: 'An error occurred while registering', description: err.toString() });
+    } else if (
+      // if everything's fine
+      database.all('INSERT INTO user (username, email, pw_hash) values (?, ?, ?)', [req.body.username, req.body.email, hash(req.body.password)], (err, rows) => {
       
-      return;
-    }
+        if (err) {
+          console.error(err);
+          res.status(500).send({ error: 'An error occurred while registering', description: err.toString() });
+          
+          return;
+        }
 
-    req.session.flash = 'You were successfully registered and can login now';
-    res.redirect('/api/signin');
+        req.session.flash = 'You were successfully registered and can login now';
+        res.redirect('/api/signin');
+        return;
+      })
+    )
     return;
   })
-
  });

@@ -3,14 +3,19 @@ var router = express.Router();
 
 const database = require('../db/dbService')
 
+//dummy hash function
+function hash(password) {
+  return password;
+}
+
 router.get('/', function(req, res, next) {
 
   const errorMessage = req.session.errorMessage;
-  const flash = req.session.flash;
+  const username = req.session.username;
 
   delete req.session.errorMessage;
-  delete req.session.flash;
-  res.render('signin', {errorMessage: errorMessage, flash: flash});
+  delete req.session.username;
+  res.render('signin', {errorMessage: errorMessage, username: username});
 });
 
 
@@ -27,12 +32,20 @@ router.post('/', function (req, res, next) {
 
     // if user does not exist
     if (rows.length == 0) {
-      req.session.errorMessage = 'Incorrect username or password';
+      req.session.errorMessage = 'Incorrect username';
       res.redirect('/api/signin');
       return;
     }
 
+    if (hash(req.body.password) != rows[0].pw_hash) {
+      req.session.username = req.body.username;
+      req.session.errorMessage = 'Invalid password';
+      res.redirect('/api/signin');
+      return;
+    }
     
+    req.session.flash = 'You were logged in';
+    req.session.user = rows[0].user_id;
 
     res.redirect('/api/');
   })

@@ -17,6 +17,8 @@ const database = require('../db/dbService')
 
 // TODO: Switch to "personal" timeline if logged in. Currently only shows public timeline. 
 router.get('/', function(req, res, next) {
+    const flash = req.session.flash;
+    delete req.session.flash;
     database.all("select message.*, user.* from message, user \
                 where message.flagged = 0 \
                 and message.author_id = user.user_id \
@@ -30,7 +32,7 @@ router.get('/', function(req, res, next) {
     }
     
     console.log('Successfully retrieved ' + rows.length + ' messages');
-    res.render('index', { messages: rows });
+    res.render('index', { messages: rows , flash: flash});
     });
 });
 
