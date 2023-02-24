@@ -21,16 +21,34 @@ function hash(password) {
 
 router.post('/', function(req, res, next) {
 
+  // user name must be entered
   if (!req.body.username) {
     req.session.errorMessage = 'You have to enter a username';
     res.redirect('/api/signup');
     return;
   }
-  //if request.body.password is not empty do this
-  if (!req.body.password) {
-    res.status(400).send('Password is required');
+
+  // correct format of email
+  if (!req.body.email || !req.body.email.includes('@')) {
+    req.session.errorMessage = 'You have to enter a valid email address';
+    res.redirect('/api/signup');
     return;
   }
+
+
+  // password must be entered
+  if (!req.body.password) {
+    req.session.errorMessage = 'You have to enter a password';
+    res.redirect('/api/signup');
+    return;
+  }
+
+  if (req.body.password != req.body.password2) {
+    req.session.errorMessage = 'The two passwords do not match';
+    res.redirect('/api/signup');
+    return;
+  }
+
   //if request.body.password and request.body.username has values from the form, do this
   var user = {
     username: req.body.username,
