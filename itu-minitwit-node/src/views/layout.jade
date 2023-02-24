@@ -14,6 +14,10 @@ html
         |  |  
         a(href="/api/signin") sign in
 
+      if flash
+        ul.flashes
+          li #{flash}
+
     
       .body
         block content  

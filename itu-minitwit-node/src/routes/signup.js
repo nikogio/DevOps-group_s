@@ -92,7 +92,7 @@ router.post('/', function(req, res, next) {
       return;
     }
 
-    req.session.successMessage = 'You were successfully registered and can login now';
+    req.session.flash = 'You were successfully registered and can login now';
     res.redirect('/api/signin');
     return;
   })

@@ -6,9 +6,11 @@ const database = require('../db/dbService')
 router.get('/', function(req, res, next) {
 
   const errorMessage = req.session.errorMessage;
+  const flash = req.session.flash;
 
   delete req.session.errorMessage;
-  res.render('signin', {errorMessage: errorMessage});
+  delete req.session.flash;
+  res.render('signin', {errorMessage: errorMessage, flash: flash});
 });
 
 
