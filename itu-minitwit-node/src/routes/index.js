@@ -40,7 +40,7 @@ router.get('/', function(req, res, next) {
     
     console.log('Successfully retrieved ' + rows.length + ' messages');
     console.log(rows);
-    res.render('index', { messages: rows, flash: flash, path: req.path});
+    res.render('index', { messages: rows, flash: flash, path: req.path, user: req.session.user});
     });
   
     
@@ -110,7 +110,7 @@ router.get('/:username', function(req, res, next) {
               return;
             }
 
-            res.render('index', { messages: rows3, path: req.path, followed: false, profile: profile})
+            res.render('index', { messages: rows3, path: req.path, followed: false, profile: profile, user: req.session.user})
             return;
           })
         } else { // if they are followed
@@ -125,7 +125,7 @@ router.get('/:username', function(req, res, next) {
               return;
             }
 
-            res.render('index', { messages: rows3, path: req.path, followed: true, profile: profile})
+            res.render('index', { messages: rows3, path: req.path, followed: true, profile: profile, user: req.session.user})
             return;
           })
 
@@ -143,7 +143,7 @@ router.get('/:username', function(req, res, next) {
               return;
             }
 
-            res.render('index', { messages: rows4, path: req.path, followed: false, profile: profile})
+            res.render('index', { messages: rows4, path: req.path, followed: false, profile: profile, user: req.session.user})
             return;
           })
     }

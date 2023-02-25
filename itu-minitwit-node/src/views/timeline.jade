@@ -6,9 +6,23 @@
 
 .timeline-box
     .title
-            h2= path == '/public' ? "Public Timeline" : (path == '/' ? "My Timeline" : (path.substring(1) + "'s Timeline"))
+        h2= path == '/public' ? "Public Timeline" : (path == '/' ? "My Timeline" : (path.substring(1) + "'s Timeline"))
 
 
+        if user
+            if profile
+                div(class="followstatus")
+                    if user == profile.user_id
+                        | This is you!
+                    else if followed
+                        | You are currently following this user. 
+                        a(class="unfollow", href="") Unfollow user.
+                    else
+                        | You are not yet following this user. 
+                        a(class="follow", href="") Follow user.
+            
+
+        
         ul.messages 
             for msg in messages 
                 li 
