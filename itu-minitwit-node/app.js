@@ -9,9 +9,10 @@ var logger = require('morgan');
 var indexRouter = require('./src/routes/index');
 var messageRouter = require('./src/routes/message');
 var followRouter = require('./src/routes/follow');
+var unfollowRouter = require('./src/routes/unfollow');
 var signupRouter = require('./src/routes/signup');
 var signinRouter = require('./src/routes/signin');
-var userRouter = require('./src/routes/user');
+/* var userRouter = require('./src/routes/user'); */
 //Simulator routing
 var simulatorRouter = require('./src/routes/simulator');
 
@@ -36,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api/message', messageRouter);
 app.use('/api/follow', followRouter);
+app.use('/api/unfollow', unfollowRouter);
 app.use('/api/signup', signupRouter);
 app.use('/api/signin', signinRouter);
 app.use('/api/', indexRouter);
