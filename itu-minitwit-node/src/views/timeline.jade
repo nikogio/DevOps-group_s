@@ -32,7 +32,8 @@
         ul.messages 
             for msg in messages 
                 li 
-                    img(src='{{ message.email|gravatar(size=48) }}')
+                    // img(src='{{ message.email|gravatar(size=48) }}')
+                    img(src='#{gravatar(msg.email, 40)}')
                     strong #[a(href="/api/#{msg.username}") #{msg.username}] 
                     span #{msg.text} 
                     small — #{convert(msg.pub_date)}

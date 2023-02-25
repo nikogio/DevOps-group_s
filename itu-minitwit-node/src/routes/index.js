@@ -3,6 +3,13 @@ var router = express.Router();
 
 const database = require('../db/dbService')
 
+const crypto = require('crypto');
+
+const gravatar = function gravatarUrl(email, size = 80) {
+  const hash = crypto.createHash('md5').update(email.trim().toLowerCase()).digest('hex');
+  return `http://www.gravatar.com/avatar/${hash}?d=identicon&s=${size}`;
+}
+
 /**
  * GET /
  *
@@ -40,7 +47,7 @@ router.get('/', function(req, res, next) {
     
     console.log('Successfully retrieved ' + rows.length + ' messages');
     console.log(rows);
-    res.render('index', { messages: rows, flash: flash, path: req.path, user: req.session.user});
+    res.render('index', { messages: rows, flash: flash, path: req.path, user: req.session.user, gravatar: gravatar});
     });
   
     
@@ -65,7 +72,7 @@ router.get('/public', function (req, res, next) {
     }
     
     console.log('Successfully retrieved ' + rows.length + ' messages');
-    res.render('index', { messages: rows, path: req.path, flash: flash, user: req.session.user});
+    res.render('index', { messages: rows, path: req.path, flash: flash, user: req.session.user, gravatar: gravatar});
     });
 });
 
@@ -114,7 +121,7 @@ router.get('/:username', function(req, res, next) {
               return;
             }
 
-            res.render('index', { messages: rows3, path: req.path, followed: false, profile: profile, user: req.session.user, flash: flash})
+            res.render('index', { messages: rows3, path: req.path, followed: false, profile: profile, user: req.session.user, flash: flash, gravatar: gravatar})
             return;
           })
         } else { // if they are followed
@@ -129,7 +136,7 @@ router.get('/:username', function(req, res, next) {
               return;
             }
 
-            res.render('index', { messages: rows3, path: req.path, followed: true, profile: profile, user: req.session.user, flash: flash})
+            res.render('index', { messages: rows3, path: req.path, followed: true, profile: profile, user: req.session.user, flash: flash, gravatar: gravatar})
             return;
           })
 
@@ -147,7 +154,7 @@ router.get('/:username', function(req, res, next) {
               return;
             }
 
-            res.render('index', { messages: rows4, path: req.path, followed: false, profile: profile, user: req.session.user, flash: flash})
+            res.render('index', { messages: rows4, path: req.path, followed: false, profile: profile, user: req.session.user, flash: flash, gravatar: gravatar})
             return;
           })
     }
