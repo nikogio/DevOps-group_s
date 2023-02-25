@@ -48,6 +48,9 @@ router.get('/', function(req, res, next) {
 
 /* Displays the latest messages of all users. */
 router.get('/public', function (req, res, next) {
+
+  const flash = req.session.flash;
+  delete req.session.flash;
   
   database.all("select message.*, user.* from message, user \
                 where message.flagged = 0 \
@@ -62,7 +65,7 @@ router.get('/public', function (req, res, next) {
     }
     
     console.log('Successfully retrieved ' + rows.length + ' messages');
-    res.render('index', { messages: rows, path: req.path});
+    res.render('index', { messages: rows, path: req.path, flash: flash, user: req.session.user});
     });
 });
 

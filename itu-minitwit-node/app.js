@@ -12,6 +12,7 @@ var followRouter = require('./src/routes/follow');
 var unfollowRouter = require('./src/routes/unfollow');
 var signupRouter = require('./src/routes/signup');
 var signinRouter = require('./src/routes/signin');
+var signoutRouter = require('./src/routes/signout');
 /* var userRouter = require('./src/routes/user'); */
 //Simulator routing
 var simulatorRouter = require('./src/routes/simulator');
@@ -40,6 +41,7 @@ app.use('/api/follow', followRouter);
 app.use('/api/unfollow', unfollowRouter);
 app.use('/api/signup', signupRouter);
 app.use('/api/signin', signinRouter);
+app.use('/api/signout', signoutRouter);
 app.use('/api/', indexRouter);
 /* app.use('/api/users', userRouter); */
 app.use('/', simulatorRouter);
