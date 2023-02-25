@@ -69,6 +69,9 @@ router.get('/public', function (req, res, next) {
 /* Display's a users tweets. */
 router.get('/:username', function(req, res, next) {
 
+  const flash = req.session.flash;
+  delete req.session.flash;
+
   database.all("SELECT * FROM user where username = ?", [req.params.username], (err, rows) => {
 
     if (err) {
@@ -76,8 +79,6 @@ router.get('/:username', function(req, res, next) {
       res.status(500).send({ error: 'An error occurred while retrieving user', description: err.toString() });
       return;
     }
-
-    // preparation for when we have a 404 page
 
     // if user does not exist
     if (rows.length == 0) {
@@ -110,7 +111,7 @@ router.get('/:username', function(req, res, next) {
               return;
             }
 
-            res.render('index', { messages: rows3, path: req.path, followed: false, profile: profile, user: req.session.user})
+            res.render('index', { messages: rows3, path: req.path, followed: false, profile: profile, user: req.session.user, flash: flash})
             return;
           })
         } else { // if they are followed
@@ -125,7 +126,7 @@ router.get('/:username', function(req, res, next) {
               return;
             }
 
-            res.render('index', { messages: rows3, path: req.path, followed: true, profile: profile, user: req.session.user})
+            res.render('index', { messages: rows3, path: req.path, followed: true, profile: profile, user: req.session.user, flash: flash})
             return;
           })
 
@@ -143,7 +144,7 @@ router.get('/:username', function(req, res, next) {
               return;
             }
 
-            res.render('index', { messages: rows4, path: req.path, followed: false, profile: profile, user: req.session.user})
+            res.render('index', { messages: rows4, path: req.path, followed: false, profile: profile, user: req.session.user, flash: flash})
             return;
           })
     }
