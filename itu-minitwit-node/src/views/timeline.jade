@@ -23,7 +23,7 @@
             else if path == '/'
                 div(class="twitbox")
                     h3 What's on your mind #{user.username}?
-                    form(action='' method='post')
+                    form(action='/api/message' method='post')
                             input(type='text' name='text' size='60')
                             input(type='submit' value='Share')
             
