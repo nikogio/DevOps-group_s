@@ -12,7 +12,7 @@
         if user
             if profile
                 div(class="followstatus")
-                    if user == profile.user_id
+                    if user.user_id == profile.user_id
                         | This is you!
                     else if followed
                         | You are currently following this user. 
