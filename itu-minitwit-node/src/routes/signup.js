@@ -36,7 +36,7 @@ router.post('/', function(req, res, next) {
   }
 
   // correct format of email
-  if (!req.body.email || !req.body.email.includes('@')) {
+  if (!req.body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(req.body.email)) {
     req.session.username = req.body.username;
     req.session.email = req.body.email;
     req.session.errorMessage = 'You have to enter a valid email address';
