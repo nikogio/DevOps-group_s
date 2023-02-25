@@ -30,7 +30,7 @@ router.get('/', function(req, res, next) {
                 and message.author_id = user.user_id \
                 and (user.user_id = ? or user.user_id in (select whom_id from follower where who_id = ?)) \
                 order by message.pub_date desc limit 30"
-    , [req.session.user, req.session.user], (err, rows) => {
+    , [req.session.user.user_id, req.session.user.user_id], (err, rows) => {
 
     if (err) {
       console.error(err);
@@ -90,7 +90,7 @@ router.get('/:username', function(req, res, next) {
 
     if (req.session.user) {
 
-      database.all("select 1 from follower where follower.who_id = ? and follower.whom_id = ?", [req.session.user, profile.user_id], (err, rows2) => {
+      database.all("select 1 from follower where follower.who_id = ? and follower.whom_id = ?", [req.session.user.user_id, profile.user_id], (err, rows2) => {
         
         if (err) {
           console.error(err);

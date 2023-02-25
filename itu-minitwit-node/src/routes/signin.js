@@ -49,7 +49,7 @@ router.post('/', function (req, res, next) {
     }
     
     req.session.flash = 'You were logged in';
-    req.session.user = rows[0].user_id;
+    req.session.user = rows[0];
 
     res.redirect('/api/');
   })

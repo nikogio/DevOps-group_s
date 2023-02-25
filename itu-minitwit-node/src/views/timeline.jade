@@ -20,6 +20,9 @@
                     else
                         | You are not yet following this user. 
                         a(class="follow", href="") Follow user.
+            else if path == '/'
+                div(class="twitbox")
+                    h3 What's on your mind #{user.username}?
             
 
         
