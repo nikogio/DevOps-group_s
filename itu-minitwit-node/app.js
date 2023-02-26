@@ -35,6 +35,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 app.use('/api/message', messageRouter);
 app.use('/api/follow', followRouter);
 app.use('/api/unfollow', unfollowRouter);
