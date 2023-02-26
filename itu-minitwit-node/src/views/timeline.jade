@@ -5,15 +5,36 @@
 - }
 
 .timeline-box
-    .title 
-        h2 Public Timeline
+    .title
+        h2= path == '/public' ? "Public Timeline" : (path == '/' ? "My Timeline" : (messages[0].username + "'s Timeline"))
 
+
+        if user
+            if profile
+                div(class="followstatus")
+                    if user.user_id == profile.user_id
+                        | This is you!
+                    else if followed
+                        | You are currently following this user. 
+                        a(class="unfollow", href="/api/unfollow/#{profile.username}") Unfollow user.
+                    else
+                        | You are not yet following this user. 
+                        a(class="follow", href="/api/follow/#{profile.username}") Follow user.
+            else if path == '/'
+                div(class="twitbox")
+                    h3 What's on your mind #{user.username}?
+                    form(action='/api/message' method='post')
+                            input(type='text' name='text' size='60')
+                            input(type='submit' value='Share')
+            
+
+        
         ul.messages 
             for msg in messages 
                 li 
-                    img(src='{{ message.email|gravatar(size=48) }}')
-                    //-  when we support users: a(href="{{ url_for('user_timeline', username=message.username)
-                    strong #[a(href="/user/#{msg.user_id}") #{msg.username}] 
+                    // img(src='{{ message.email|gravatar(size=48) }}')
+                    img(src='#{gravatar(msg.email, 40)}')
+                    strong #[a(href="/api/#{msg.username}") #{msg.username}] 
                     span #{msg.text} 
                     small — #{convert(msg.pub_date)}
             else 

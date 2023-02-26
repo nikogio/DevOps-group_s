@@ -35,5 +35,39 @@ router.get('/', async function(req, res, next) {
   
 });
 
+/* Registers a new message for the user. */
+router.post('/', function (req, res, next) {
+
+  if (!req.session.user) {
+    console.log("You are not logged in, so you cannot create message.");
+    res.status(400).send({ error: 'You must be logged in to post.'});
+    return;
+  }
+
+  if (req.body.text) {
+
+    database.all("insert into message (author_id, text, pub_date, flagged) values (?, ?, ?, 0)", [req.session.user.user_id, req.body.text, Math.floor(Date.now()/1000)], (err, rows) => {
+
+      if (err) {
+        console.error(err);
+        res.status(500).send({ error: 'An error occurred while registering', description: err.toString() });
+        
+        return;
+      }
+
+      req.session.flash = 'Your message was recorded';
+      res.redirect('/api');
+      return;
+
+    })
+
+  } else {
+
+    res.redirect('/api');
+
+  }
+
+});
+
 
 module.exports = router;

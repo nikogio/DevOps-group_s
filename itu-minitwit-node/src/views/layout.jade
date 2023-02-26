@@ -1,18 +1,31 @@
 doctype html
 html
   head
-    title= title
+    title MiniTwit
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
     .page
-      h1= title
+      h1 MiniTwit
 
       .navigation
-        a(href="/") public timeline
-        |  |  
-        a(href="signup") sign up
-        |  |  
-        a(href="signin") sign in
+        
+        if user
+          a(href="/api/") my timeline
+          |  |  
+          a(href="/api/public") public timeline
+          |  |  
+          a(href="/api/signout") sign out [#{user.username}]
+        else
+          a(href="/api/") public timeline
+          |  |  
+          a(href="/api/signup") sign up
+          |  |  
+          a(href="/api/signin") sign in
+
+
+      if flash
+        ul.flashes
+          li #{flash}
 
     
       .body
