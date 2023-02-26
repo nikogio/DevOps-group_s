@@ -46,7 +46,6 @@ router.get('/', function(req, res, next) {
     }
     
     console.log('Successfully retrieved ' + rows.length + ' messages');
-    console.log(rows);
     res.render('index', { messages: rows, flash: flash, path: req.path, user: req.session.user, gravatar: gravatar});
     });
   
