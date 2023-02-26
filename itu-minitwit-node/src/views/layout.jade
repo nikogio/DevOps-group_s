@@ -8,11 +8,24 @@ html
       h1 MiniTwit
 
       .navigation
-        a(href="/api/") public timeline
-        |  |  
-        a(href="/api/signup") sign up
-        |  |  
-        a(href="/api/signin") sign in
+        
+        if user
+          a(href="/api/") my timeline
+          |  |  
+          a(href="/api/public") public timeline
+          |  |  
+          a(href="/api/signout") sign out [#{user.username}]
+        else
+          a(href="/api/") public timeline
+          |  |  
+          a(href="/api/signup") sign up
+          |  |  
+          a(href="/api/signin") sign in
+
+
+      if flash
+        ul.flashes
+          li #{flash}
 
     
       .body

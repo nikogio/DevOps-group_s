@@ -3,7 +3,7 @@ var router = express.Router();
 
 const database = require('../db/dbService');
 
-/* Adds the current user as follower of the given user.*/
+/* Removes the current user as follower of the given user. */
 router.get('/:username', function(req, res, next) {
   
   if (!req.session.user) {
@@ -26,8 +26,8 @@ router.get('/:username', function(req, res, next) {
       return;
     } else {
 
-      database.all("INSERT into follower (who_id, whom_id) values (?, ?)", [req.session.user.user_id, rows[0].user_id], (err, rows2) => {
-        req.session.flash = "You are now following " + rows[0].username;
+      database.all("delete from follower where who_id=? and whom_id=?", [req.session.user.user_id, rows[0].user_id], (err, rows2) => {
+        req.session.flash = "You are no longer following " + rows[0].username;
         res.redirect(`/api/${rows[0].username}`);
         return;
       })

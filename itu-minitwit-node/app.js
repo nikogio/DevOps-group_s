@@ -1,5 +1,6 @@
 var createError = require('http-errors');
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -8,13 +9,21 @@ var logger = require('morgan');
 var indexRouter = require('./src/routes/index');
 var messageRouter = require('./src/routes/message');
 var followRouter = require('./src/routes/follow');
+var unfollowRouter = require('./src/routes/unfollow');
 var signupRouter = require('./src/routes/signup');
 var signinRouter = require('./src/routes/signin');
-var userRouter = require('./src/routes/user');
+var signoutRouter = require('./src/routes/signout');
+/* var userRouter = require('./src/routes/user'); */
 //Simulator routing
 var simulatorRouter = require('./src/routes/simulator');
 
 var app = express();
+
+app.use(session({
+  secret: 'c2b71086dd6ba3b83431e00118d52c0fd2f178f439910fe7bf7e86a2a163e26f83932fac1f908015d7815bf0a817914e38ee56d904888337bff57c91c76ae8b1',
+  resave: false,
+  saveUninitialized: false
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, '/src/views'));
@@ -26,12 +35,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/', indexRouter);
+
 app.use('/api/message', messageRouter);
 app.use('/api/follow', followRouter);
+app.use('/api/unfollow', unfollowRouter);
 app.use('/api/signup', signupRouter);
 app.use('/api/signin', signinRouter);
-app.use('/api/users', userRouter);
+app.use('/api/signout', signoutRouter);
+app.use('/api/', indexRouter);
+/* app.use('/api/users', userRouter); */
 app.use('/', simulatorRouter);
 
 // catch 404 and forward to error handler
