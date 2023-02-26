@@ -9,7 +9,7 @@ const database = require('../db/dbService')
 const LatestService = require('../services/LatestService');
 const latestService = new LatestService();
 
-const getAllUsers = require('../model/user')
+const getAllUsers = require('../model/user');
 
 
 router.get('/latest', function (req, res, next) {
@@ -219,5 +219,130 @@ router.post('/msgs/:username', async function (req, res, next) {
     console.log("error", error)
   }
 })
+
+
+router.get('/fllws/:username', async function (req, res, next) {
+  let username = req.params.username;
+  try {
+    //Checks if header comes from simulator
+    const header = req.headers.authorization;
+    if (!isSimulator(header)) {
+      res.status(403).send({ status: 403, error_msg: "You are not authorized to use this resource!" });
+      return;
+    }
+    //Updates Latest
+    var latest = req.query.latest;
+    if (latest !== undefined && parseInt(latest) !== NaN) {
+      latestService.updateLatest(parseInt(latest));
+    }
+
+    const users = await getAllUsers();
+    const userSelected = users.find(user => user.username === username);
+    if (!userSelected) {
+      res.status(404).send({ status: 404, error_msg: "User is not on our database" });
+      return;
+    }
+    const userId = userSelected.user_id;
+
+    const query = `SELECT user.username FROM user
+                   INNER JOIN follower ON follower.whom_id=user.user_id
+                   WHERE follower.who_id=?
+                   LIMIT ?`;
+
+    const no_followers = parseInt(req.query.no) || 100;
+    database.all(query, [userId, no_followers], (err, rows) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send({ status: 500, error_msg: "Internal Server Error" });
+        return;
+      }
+      const filteredFllws = [];
+      for (const fllw of rows) {
+        filteredFllws.push(fllw.username);
+      }
+      const response = { follows: filteredFllws };
+      res.send(response);
+    });
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).send({ status: 500, error_msg: "Internal Server Error" });
+  }
+});
+
+
+
+router.post('/fllws/:username', async function (req, res, next) {
+  let username = req.params.username;
+  try {
+    // Checks if header comes from simulator
+    const header = req.headers.authorization;
+    if (!isSimulator(header)) {
+      res.status(403).send({ status: 403, error_msg: "You are not authorized to use this resource!" });
+      return;
+    }
+
+    // Updates Latest
+    const latest = req.query.latest;
+    if (latest !== undefined && parseInt(latest) !== NaN) {
+      latestService.updateLatest(parseInt(latest));
+    }
+
+    const users = await getAllUsers();
+    const userSelected = users.find(user => user.username === username);
+    if (!userSelected) {
+      res.status(404).send({ status: 404, error_msg: "User is not on our database" });
+      return;
+    }
+    const userId = userSelected.user_id;
+
+    if (req.body.follow) {
+      const followUsername = req.body.follow;
+      const followsUser = users.find(user => user.username === followUsername);
+      if (!followsUser) {
+        res.status(404).send({ status: 404, error_msg: "Follows user is not on our database" });
+        return;
+      }
+      const followsUserId = followsUser.user_id;
+
+      const query = "INSERT INTO follower (who_id, whom_id) values (?, ?)";
+      database.run(query, [userId, followsUserId], function (err) {
+        if (err) {
+          console.error(err);
+          res.status(500).send({ status: 500, error_msg: "Internal Server Error" });
+          return;
+        }
+        res.status(204).send("");
+      });
+    } else if (req.body.unfollow) {
+      const unfollowUsername = req.body.unfollow;
+      const unfollowsUser = users.find(user => user.username === unfollowUsername);
+      if (!unfollowsUser) {
+        res.status(404).send({ status: 404, error_msg: "Unfollows user is not on our database" });
+        return;
+      }
+      const unfollowsUserId = unfollowsUser.user_id;
+
+
+      const query = "DELETE FROM follower WHERE who_id=? and whom_id=?";
+
+      database.run(query, [userId, unfollowsUserId], function (err) {
+        if (err) {
+          console.error(err);
+          res.status(500).send({ status: 500, error_msg: "Internal Server Error" });
+          return;
+        }
+        res.status(204).send("");
+      });
+    } else {
+      res.status(400).send({ status: 400, error_msg: "Invalid request body" });
+    }
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).send({ status: 500, error_msg: "Internal Server Error" });
+  }
+});
+
+
+
 
 module.exports = router;
