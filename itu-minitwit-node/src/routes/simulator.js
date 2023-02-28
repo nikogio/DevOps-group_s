@@ -10,7 +10,7 @@ const LatestService = require('../services/LatestService');
 const latestService = new LatestService();
 
 const getAllUsers = require('../model/user');
-
+const getFollowersFromUser = require('../model/followers.js');
 
 router.get('/latest', function (req, res, next) {
   res.send({ latest: latestService.getLatest() });
@@ -56,7 +56,7 @@ router.post("/register", async function (req, res, next) {
         email: email,
         pw_hash: hash(password)
       };
-      database.add('user', body, function(lasdId, err) {
+      database.add('user', body, function (lasdId, err) {
         if (err) {
           console.error(err.message);
         } else {
@@ -207,7 +207,7 @@ router.post('/msgs/:username', async function (req, res, next) {
       pub_date: Math.floor(Date.now() / 1000),
       flagged: 0
     };
-    database.add('message', body, function(lasdId, err) {
+    database.add('message', body, function (lasdId, err) {
       if (err) {
         console.error(err.message);
       } else {
@@ -219,7 +219,6 @@ router.post('/msgs/:username', async function (req, res, next) {
     console.log("error", error)
   }
 })
-
 
 router.get('/fllws/:username', async function (req, res, next) {
   let username = req.params.username;
@@ -269,8 +268,6 @@ router.get('/fllws/:username', async function (req, res, next) {
   }
 });
 
-
-
 router.post('/fllws/:username', async function (req, res, next) {
   let username = req.params.username;
   try {
@@ -302,13 +299,20 @@ router.post('/fllws/:username', async function (req, res, next) {
         res.status(404).send({ status: 404, error_msg: "Follows user is not on our database" });
         return;
       }
-      const followsUserId = followsUser.user_id;
 
+      const userFollowsList = await getFollowersFromUser(userId, null);
+      if (userFollowsList.includes(followsUser.username)) {
+        res.status(403).send({ status: 403, error_msg: "User already follows this user" });
+        return
+      }
+      
+      const followsUserId = followsUser.user_id;
       const query = "INSERT INTO follower (who_id, whom_id) values (?, ?)";
-      database.run(query, [userId, followsUserId], function (err) {
+
+      database.run(query, [userId, followsUserId], function (result, err) {
         if (err) {
           console.error(err);
-          res.status(500).send({ status: 500, error_msg: "Internal Server Error" });
+          res.status(500).send({ status: 500, error_msg: err });
           return;
         }
         res.status(204).send("");
@@ -322,13 +326,18 @@ router.post('/fllws/:username', async function (req, res, next) {
       }
       const unfollowsUserId = unfollowsUser.user_id;
 
+      //Validates if user is following the unfollows user
+      const userFollowsList = await getFollowersFromUser(userId, null);
+      if (!userFollowsList.includes(unfollowsUser.username)) {
+        res.status(403).send({ status: 403, error_msg: "User is not following the user with name " + unfollowsUser.username});
+        return
+      }
 
       const query = "DELETE FROM follower WHERE who_id=? and whom_id=?";
-
-      database.run(query, [userId, unfollowsUserId], function (err) {
+      database.run(query, [userId, unfollowsUserId], function (result, err) {
         if (err) {
           console.error(err);
-          res.status(500).send({ status: 500, error_msg: "Internal Server Error" });
+          res.status(500).send({ status: 500, error_msg: err});
           return;
         }
         res.status(204).send("");
@@ -338,11 +347,8 @@ router.post('/fllws/:username', async function (req, res, next) {
     }
   } catch (error) {
     console.log("error", error);
-    res.status(500).send({ status: 500, error_msg: "Internal Server Error" });
+    res.status(500).send({ status: 500, error_msg: error });
   }
 });
-
-
-
 
 module.exports = router;
