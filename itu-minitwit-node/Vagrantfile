@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder "remote_files", "/minitwit", type: "rsync"
   config.vm.synced_folder '.', '/vagrant', disabled: true
-  config.vm.define "webserver", primary: false do |server|
+  config.vm.define "webserver1", primary: false do |server|
 
     server.vm.provider :digital_ocean do |provider|
       provider.ssh_key_name = "do_ssh_key"
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
       provider.privatenetworking = true
     end
 
-    server.vm.hostname = "webserver"
+    server.vm.hostname = "webserver1"
     server.vm.provision "shell", inline: <<-SHELL
     
     # Install docker and docker-compose
